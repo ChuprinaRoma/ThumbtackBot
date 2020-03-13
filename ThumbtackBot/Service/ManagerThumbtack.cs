@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,34 +22,43 @@ namespace ThumbtackBot.Service
                 {
                     try
                     {
-                        Thread.Sleep(500);
-                        driver.Navigate().Refresh();
-                        Thread.Sleep(500);
+                        Thread.Sleep(2000);
+                        driver.Navigate().GoToUrl("https://www.thumbtack.com/pro-leads/opportunities");
+                        Thread.Sleep(1000);
                         CheckEstimate();
                     }
                     catch(Exception e)
-                    { }
+                    {
+                        if(isOpenPage)
+                        {
+                            driver.Navigate().GoToUrl("https://www.thumbtack.com/pro-leads/opportunities");
+                            isOpenPage = false;
+                        }
+                    }
                 }
             });
         }
 
+        bool isOpenPage = false;
         private void CheckEstimate()
         {
-            IWebElement theHiddenFields = driver.FindElements(By.ClassName("_3nbLX8RQ6YfnF8skKyAMn6"))[9];
+            IWebElement theHiddenFields = driver.FindElements(By.ClassName("_3nbLX8RQ6YfnF8skKyAMn6"))[0];
             IWebElement webElement = theHiddenFields.FindElement(By.ClassName("tp-body-3"));
             IWebElement webElement1 = theHiddenFields.FindElement(By.ClassName("_2CiDoK_ev_l6bQ7p3GC2fA"));
             string timeAgo = webElement.Text.Remove(webElement.Text.IndexOf(" • "));
             if (timeAgo.Contains('m') || timeAgo.Contains('s'))
             {
                 theHiddenFields.FindElement(By.TagName("a")).Click();
-                IWebElement input = driver.FindElements(By.ClassName("Flex"))[1].FindElement(By.TagName("input"));
-                input.SendKeys("1");
+                isOpenPage = true;
+                Thread.Sleep(2000);
                 IWebElement textarea = driver.FindElement(By.TagName("textarea"));
                 textarea.SendKeys("We can do free estimate!");
+                IWebElement input = driver.FindElements(By.ClassName("Flex")).FirstOrDefault(b => b.Displayed).FindElement(By.TagName("input"));
+                input.SendKeys("1");
                 var btn = driver.FindElements(By.ClassName("Button")).FirstOrDefault(b => b.Displayed);
                 btn.Click();
             }
-            driver.Navigate().Back();
+            driver.Navigate().GoToUrl("https://www.thumbtack.com/pro-leads/opportunities");
         }
 
         public void StartBot(string miles)
