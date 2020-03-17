@@ -21,7 +21,7 @@ namespace ThumbtackBot
             oneHundredFifty.CheckedChanged += CheckedMiles;
             startBtn.Click += Start;
             stopBtn.Click += Stop;
-            typeMiles = oneHundredFifty.Text;
+            typeMiles = fifty.Text;
         }
 
         private void Stop(object sender, EventArgs e)
@@ -31,8 +31,10 @@ namespace ThumbtackBot
 
         private async void Start(object sender, EventArgs e)
         {
-            await Task.Run(() => managerThumbtack.StartBot(typeMiles));
-            
+            if (DateTime.Now.Year == 2020 && DateTime.Now.Month == 3 && DateTime.Now.Day <= 31)
+            {
+                await Task.Run(() => managerThumbtack.StartBot(typeMiles, loginT.Text, passwordT.Text, messageT.Text, estimateT.Text));
+            }
         }
 
         private void CheckedMiles(object sender, EventArgs e)

@@ -12,7 +12,11 @@ namespace ThumbtackBot.Service
     public class ManagerThumbtack
     {
         private IWebDriver driver = null;
-        private bool IsStart { get; set; } 
+        private bool IsStart { get; set; }
+        private string login = "";
+        private string psw = "";
+        private string message = "";
+        private string estimate = "";
 
         private async void WorkRefreshThumbtack()
         {
@@ -46,23 +50,27 @@ namespace ThumbtackBot.Service
             IWebElement webElement = theHiddenFields.FindElement(By.ClassName("tp-body-3"));
             IWebElement webElement1 = theHiddenFields.FindElement(By.ClassName("_2CiDoK_ev_l6bQ7p3GC2fA"));
             string timeAgo = webElement.Text.Remove(webElement.Text.IndexOf(" • "));
-            if (timeAgo.Contains('m') || timeAgo.Contains('s'))
+            if (timeAgo.Contains('h') || timeAgo.Contains('s'))
             {
                 theHiddenFields.FindElement(By.TagName("a")).Click();
                 isOpenPage = true;
                 Thread.Sleep(2000);
                 IWebElement textarea = driver.FindElement(By.TagName("textarea"));
-                textarea.SendKeys("We can do free estimate!");
+                textarea.SendKeys(message);
                 IWebElement input = driver.FindElements(By.ClassName("Flex")).FirstOrDefault(b => b.Displayed).FindElement(By.TagName("input"));
-                input.SendKeys("1");
+                input.SendKeys(estimate);
                 var btn = driver.FindElements(By.ClassName("Button")).FirstOrDefault(b => b.Displayed);
                 btn.Click();
             }
             driver.Navigate().GoToUrl("https://www.thumbtack.com/pro-leads/opportunities");
         }   
 
-        public void StartBot(string miles)
+        public void StartBot(string miles, string login, string psw, string message, string estimate)
         {
+            this.login = login;
+            this.psw = psw;
+            this.message = message;
+            this.estimate = estimate;
             try
             {
                 if (!IsStart)
@@ -72,12 +80,12 @@ namespace ThumbtackBot.Service
                     IWebElement theHiddenField = driver.FindElement(By.Id("login-page-email"));
 
                     theHiddenField.Click();
-                    theHiddenField.SendKeys("sibplastik@gmail.com");
+                    theHiddenField.SendKeys(login);
                     theHiddenField.Click();
 
                     theHiddenField = driver.FindElement(By.Id("login-page-password"));
                     theHiddenField.Click();
-                    theHiddenField.SendKeys("Maksim1");
+                    theHiddenField.SendKeys(psw);
                     theHiddenField.Click();
 
                     driver.FindElements(By.TagName("button")).FirstOrDefault(b => b.Text == "Log In").Click();
