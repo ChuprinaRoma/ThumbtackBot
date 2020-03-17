@@ -59,7 +59,7 @@ namespace ThumbtackBot.Service
                 btn.Click();
             }
             driver.Navigate().GoToUrl("https://www.thumbtack.com/pro-leads/opportunities");
-        }
+        }   
 
         public void StartBot(string miles)
         {
